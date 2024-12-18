@@ -26,6 +26,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
+            align-items: center;
         }
         .checklist-options label {
             margin-right: 10px;
@@ -33,6 +34,10 @@
         @media (max-width: 768px) {
             .checklist-options {
                 flex-direction: column;
+                align-items: flex-start;
+            }
+            .checklist-options label {
+                margin-right: 0;
             }
         }
     </style>
@@ -60,11 +65,11 @@
                 <div class="checklist-item">
                     <label>{{ item }}</label>
                     <div class="checklist-options">
-                        <input type="radio" id="{{ item }}_troca" name="checklist[{{ item }}]" value="TROCA">
+                        <input type="checkbox" id="{{ item }}_troca" name="checklist[{{ item }}]" value="TROCA">
                         <label for="{{ item }}_troca">TROCA</label>
-                        <input type="radio" id="{{ item }}_reparo" name="checklist[{{ item }}]" value="REPARO">
+                        <input type="checkbox" id="{{ item }}_reparo" name="checklist[{{ item }}]" value="REPARO">
                         <label for="{{ item }}_reparo">REPARO</label>
-                        <input type="radio" id="{{ item }}_limpeza" name="checklist[{{ item }}]" value="LIMPEZA">
+                        <input type="checkbox" id="{{ item }}_limpeza" name="checklist[{{ item }}]" value="LIMPEZA">
                         <label for="{{ item }}_limpeza">LIMPEZA</label>
                     </div>
                 </div>
