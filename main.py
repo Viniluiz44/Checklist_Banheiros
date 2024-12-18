@@ -144,8 +144,6 @@ def registrar_manutencao():
 
 
 
-
-
 @app.route('/consultar_historico', methods=['GET', 'POST'])
 def consultar_historico():
     if request.method == 'POST':
