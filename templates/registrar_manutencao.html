@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Manutenção</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .checklist-item label {
+            min-width: 150px;
+        }
+        .checklist-options {
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Registrar Manutenção</h1>
+        <nav>
+            <a href="{{ url_for('index') }}">Início</a>
+            <a href="{{ url_for('cadastrar_equipamento') }}">Cadastrar Equipamento</a>
+            <a href="{{ url_for('consultar_historico') }}">Consultar Histórico</a>
+        </nav>
+    </header>
+    <main>
+        <h2>Novo Checklist de Manutenção</h2>
+        <form method="post">
+            <label for="qr_code">QR Code:</label>
+            <input type="text" id="qr_code" name="qr_code" required>
+            <button type="button" id="scan">📷 Ler QR Code</button>
+            <div id="reader" style="width: 300px; margin: 20px auto; display: none;"></div>
+
+            <h3>Checklist:</h3>
+            
+            {% for item in checklist_items %}
+            <div class="checklist-item">
+                <label>{{ item }}</label>
+                <div class="checklist-options">
+                    <input type="radio" id="{{ item }}_ok" name="checklist[{{ item }}]" value="OK">
+                    <label for="{{ item }}_ok">OK</label>
+                    <input type="radio" id="{{ item }}_troca" name="checklist[{{ item }}]" value="TROCA">
+                    <label for="{{ item }}_troca">TROCA</label>
+                    <input type="radio" id="{{ item }}_reparo" name="checklist[{{ item }}]" value="REPARO">
+                    <label for="{{ item }}_reparo">REPARO</label>
+                    <input type="radio" id="{{ item }}_limpeza" name="checklist[{{ item }}]" value="LIMPEZA">
+                    <label for="{{ item }}_limpeza">LIMPEZA</label>
+                </div>
+            </div>
+            {% endfor %}
+            
+            <input type="submit" value="Registrar Manutenção">
+        </form>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/html5-qrcode/minified/html5-qrcode.min.js"></script>
+    <script>
+    document.getElementById('scan').addEventListener('click', () => {
+        const qrCodeScanner = new Html5Qrcode("reader");
+        qrCodeScanner.start(
+            { facingMode: "environment" },
+            { fps: 10, qrbox: 250 },
+            (decodedText) => {
+                document.getElementById("qr_code").value = decodedText;
+                qrCodeScanner.stop();
+                document.getElementById("reader").style.display = "none";
+            },
+            (errorMessage) => { console.log("Erro durante a leitura:", errorMessage); }
+        ).catch((err) => {
+            alert("Não foi possível acessar a câmera. Verifique as permissões no navegador.");
+        });
+        document.getElementById("reader").style.display = "block";
+    });
+    </script>
+    <script src="/static/color_mode.js"></script>
+</body>
+</html>

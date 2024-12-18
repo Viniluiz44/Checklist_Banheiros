@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultar Histórico</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1>Consultar Histórico</h1>
+        <nav>
+            <a href="{{ url_for('index') }}">Início</a>
+            <a href="{{ url_for('cadastrar_equipamento') }}">Cadastrar Equipamento</a>
+            <a href="{{ url_for('registrar_manutencao') }}">Registrar Manutenção</a>
+        </nav>
+    </header>
+    <main>
+        <h2>Buscar Histórico por QR Code</h2>
+        <form method="post">
+            <label for="qr_code">QR Code:</label>
+            <input type="text" id="qr_code" name="qr_code" required>
+            <button type="button" id="scan">📷 Ler QR Code</button>
+            <div id="reader" style="width: 300px; margin: 20px auto; display: none;"></div>
+            <input type="submit" value="Consultar">
+        </form>
+
+        {% if historico %}
+        <h3>Histórico de {{ historico.nome }}</h3>
+        <ul>
+            {% for manutencao in historico.manutencoes %}
+            <li>{{ manutencao.data }} - {{ manutencao.descricao }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/html5-qrcode/minified/html5-qrcode.min.js"></script>
+    <script>
+        document.getElementById('scan').addEventListener('click', () => {
+            const qrCodeScanner = new Html5Qrcode("reader");
+            qrCodeScanner.start(
+                { facingMode: "environment" },
+                { fps: 10, qrbox: 250 },
+                (decodedText) => {
+                    document.getElementById("qr_code").value = decodedText;
+                    qrCodeScanner.stop();
+                    document.getElementById("reader").style.display = "none";
+                },
+                (errorMessage) => { console.log("Erro durante a leitura:", errorMessage); }
+            ).catch((err) => {
+                alert("Não foi possível acessar a câmera. Verifique as permissões no navegador.");
+            });
+            document.getElementById("reader").style.display = "block";
+        });
+    </script>
+    <script src="/static/color_mode.js"></script>
+</body>
+</html>

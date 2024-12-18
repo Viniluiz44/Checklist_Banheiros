@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Equipamento</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Cadastrar Equipamento</h1>
+        <nav>
+            <a href="{{ url_for('index') }}">Início</a>
+            <a href="{{ url_for('registrar_manutencao') }}">Registrar Manutenção</a>
+            <a href="{{ url_for('consultar_historico') }}">Consultar Histórico</a>
+        </nav>
+    </header>
+    <main>
+        <h2>Novo Equipamento</h2>
+        <form method="post">
+            <label for="nome_equipamento">Nome do Equipamento:</label>
+            <input type="text" id="nome_equipamento" name="nome_equipamento" required>
+            <label for="qr_code">QR Code:</label>
+            <input type="text" id="qr_code" name="qr_code" required>
+            <button type="button" id="scan">📷 Ler QR Code</button>
+            <button type="button" onclick="gerarPDF()">Gerar PDF</button>
+            <div id="qrcode-display"></div>
+            <div id="reader" style="width: 300px; margin: 20px auto; display: none;"></div>
+            <input type="submit" value="Cadastrar">
+        </form>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/html5-qrcode/minified/html5-qrcode.min.js"></script>
+    <script>
+    document.getElementById('scan').addEventListener('click', () => {
+        const qrCodeScanner = new Html5Qrcode("reader");
+        qrCodeScanner.start(
+            { facingMode: "environment" }, // Alterado para utilizar a câmera traseira
+            { fps: 10, qrbox: 250 },
+            (decodedText) => {
+                document.getElementById("qr_code").value = decodedText;
+                qrCodeScanner.stop();
+                document.getElementById("reader").style.display = "none";
+            },
+            (errorMessage) => { console.log("Erro durante a leitura:", errorMessage); }
+        ).catch((err) => {
+            alert("Não foi possível acessar a câmera. Verifique as permissões no navegador.");
+        });
+        document.getElementById("reader").style.display = "block";
+    });
+
+    function gerarQRCode() {
+        const qrCodeInput = document.getElementById("qr_code").value;
+        const qrCodeContainer = document.getElementById("qrcode-display");
+        if (!qrCodeInput) {
+            alert("Por favor, preencha o campo QR Code antes de gerar.");
+            return;
+        }
+        qrCodeContainer.innerHTML = "";
+        new QRCode(qrCodeContainer, { text: qrCodeInput, width: 128, height: 128 });
+    }
+
+    function gerarPDF() {
+        const qrCodeInput = document.getElementById("qr_code").value;
+        if (!qrCodeInput) {
+            alert("Por favor, preencha o campo QR Code antes de gerar o PDF.");
+            return;
+        }
+        fetch('/gerar_qrcode_pdf', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ qr_code: qrCodeInput }),
+        })
+        .then(response => response.blob())
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'qrcode.pdf';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        })
+        .catch(error => console.error('Erro ao gerar PDF:', error));
+    }
+    </script>
+    <script src="/static/color_mode.js"></script>
+</body>
+</html>

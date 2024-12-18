@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Histórico de Manutenções</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1>Histórico de Manutenções</h1>
+    </header>
+    <main>
+        <h2>Histórico de Manutenções para {{ historico.nome }}</h2>
+        <ul>
+            {% for manutencao in historico.manutencoes %}
+            <li>Data: {{ manutencao.data }} - Descrição: {{ manutencao.descricao }}</li>
+            {% endfor %}
+        </ul>
+        <a href="/">Voltar</a>
+    </main>
+    <script src="/static/color_mode.js"></script>
+</body>
+</html>

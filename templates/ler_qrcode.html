@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ler QR Code</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Leitor de QR Code</h1>
+        <button type="button" id="scan">📷 Ler QR Code</button>
+        <input type="text" id="qr_code" name="qr_code" placeholder="Código do QR Code" readonly>
+        <div id="reader" style="width: 300px; margin: 20px auto; display: none;"></div>
+    </div>
+
+    <!-- Inclua a biblioteca html5-qrcode -->
+    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+
+    <!-- Código JavaScript -->
+    <script>
+        document.getElementById('scan').addEventListener('click', () => {
+            const qrCodeScanner = new Html5Qrcode("reader");
+
+            console.log("Inicializando leitor QR Code...");
+
+            // Enumerar todos os dispositivos e procurar pela câmera traseira
+            navigator.mediaDevices.enumerateDevices()
+                .then(devices => {
+                    const videoDevices = devices.filter(device => device.kind === 'videoinput');
+                    console.log("Dispositivos de vídeo disponíveis: ", videoDevices);
+                    
+                    let rearCamera = videoDevices.find(device => device.label.toLowerCase().includes('back')) || videoDevices[0];
+                    
+                    if (rearCamera) {
+                        console.log("Usando a câmera traseira: ", rearCamera.label);
+                        qrCodeScanner.start(
+                            { deviceId: { exact: rearCamera.deviceId } },
+                            {
+                                fps: 10,
+                                qrbox: 250
+                            },
+                            (decodedText) => {
+                                console.log("QR Code lido com sucesso:", decodedText);
+                                document.getElementById("qr_code").value = decodedText;
+                                qrCodeScanner.stop();
+                                document.getElementById("reader").style.display = "none";
+                            },
+                            (errorMessage) => {
+                                console.log("Erro durante a leitura:", errorMessage);
+                            }
+                        ).catch((err) => {
+                            console.error("Erro ao acessar a câmera:", err);
+                            alert("Não foi possível acessar a câmera. Verifique as permissões no navegador.");
+                        });
+
+                        document.getElementById("reader").style.display = "block";
+                    } else {
+                        console.error("Nenhuma câmera encontrada.");
+                        alert("Nenhuma câmera foi encontrada no dispositivo.");
+                    }
+                })
+                .catch(err => {
+                    console.error("Erro ao obter a lista de câmeras:", err);
+                    alert("Erro ao obter a lista de câmeras. Verifique as permissões no navegador.");
+                });
+        });
+    </script>
+</body>
+</html>

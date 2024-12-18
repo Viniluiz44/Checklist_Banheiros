@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explorador de Arquivos</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1>Explorador de Arquivos</h1>
+        <nav>
+            <a href="{{ url_for('index') }}">Início</a>
+            <a href="{{ url_for('cadastrar_equipamento') }}">Cadastrar Equipamento</a>
+            <a href="{{ url_for('registrar_manutencao') }}">Registrar Manutenção</a>
+            <a href="{{ url_for('consultar_historico') }}">Consultar Histórico</a>
+            <a href="{{ url_for('explorador') }}">Explorador de Arquivos</a>
+        </nav>
+    </header>
+    <main>
+        <div class="container">
+            <h2>Explorador de Arquivos</h2>
+            <form action="/upload" method="post" enctype="multipart/form-data">
+                <label for="file">Selecione um arquivo para upload:</label>
+                <input type="file" name="file" id="file">
+                <input type="submit" value="Upload">
+            </form>
+            <h2>Arquivos Disponíveis</h2>
+            <ul>
+                {% for file in files %}
+                <li>
+                    <a href="{{ url_for('static', filename='uploads/' + file) }}">{{ file }}</a>
+                    <form action="/delete/{{ file }}" method="post" style="display:inline;">
+                        <input type="submit" value="Excluir">
+                    </form>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </main>
+    <footer>
+        <p class="boas_vindas">&copy; 2024 Sistema de Manutenção</p>
+    </footer>
+
+    <script src="/static/color_mode.js"></script>
+</body>
+</html>

@@ -1,0 +1,170 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #FFFFFF; /* Fundo branco */
+    margin: 0;
+    padding: 0;
+    color: #000000; /* Texto preto */
+}
+
+header {
+    background-color: #0055A4; /* Azul primário */
+    color: white;
+    padding: 1.5rem;
+    text-align: center;
+    position: relative;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin: 0;
+}
+
+.boas_vindas {
+    text-align: center;
+}
+
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+nav a {
+    font-size: 1.2rem;
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    background-color: #82752d; /* Amarelo secundário */
+    border-radius: 5px;
+}
+
+nav a:hover {
+    background-color: #228B22; /* Verde acento */
+}
+
+.color-mode {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.color-mode button {
+    background-color: #82752d; /* Amarelo secundário */
+    color: black; /* Texto preto */
+    font-size: 1rem;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.color-mode button:hover {
+    background-color: #228B22; /* Verde acento */
+    color: white; /* Texto branco */
+}
+
+main {
+    padding: 2rem;
+    max-width: 800px;
+    margin: auto;
+}
+
+h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+form input[type="file"], form input[type="text"], form textarea {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button, input[type="submit"] {
+    background-color: #0055A4; /* Azul primário */
+    color: white;
+    font-size: 1.2rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover, input[type="submit"]:hover {
+    background-color: #82752d; /* Amarelo secundário */
+}
+
+/* Estilos para modos de daltonismo */
+.monochromacy * {
+    filter: grayscale(100%);
+}
+
+.dichromacy * {
+    filter: contrast(150%) saturate(200%);
+}
+
+.trichromacy * {
+    filter: hue-rotate(90deg);
+}
+
+.normal * {
+    filter: none;
+}
+
+/* Media Queries para Responsividade */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 2rem;
+    }
+
+    nav {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    nav a {
+        margin-bottom: 10px;
+    }
+
+    .color-mode {
+        position: static;
+        margin-top: 10px;
+    }
+
+    main {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 1.5rem;
+    }
+
+    nav a {
+        font-size: 1rem;
+        padding: 8px 15px;
+    }
+
+    .color-mode button {
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+
+    button, input[type="submit"] {
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+    }
+}
