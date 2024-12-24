@@ -45,7 +45,6 @@
 <body>
     <header>
         <h1>Registrar Manutenção</h1>
-        <img src="/static/c-a-5-logo-black-and-white.png" alt="Logo" class="logo">
         <nav>
         </nav>
     </header>
@@ -56,6 +55,13 @@
             <input type="text" id="qr_code" name="qr_code" required>
             <button type="button" id="scan">📷 Ler QR Code</button>
             <div id="reader" style="width: 300px; margin: 20px auto; display: none;"></div>
+
+            <label for="equipamento">Selecione o Equipamento:</label>
+            <select id="equipamento" name="equipamento" class="form-control">
+                {% for item in equipamentos %}
+                <option value="{{ item['qr_code'] }}">{{ item['nome'] }}</option>
+                {% endfor %}
+            </select>
 
             <h3>Checklist:</h3>
             <div class="checklist-container">
@@ -94,6 +100,11 @@
             alert("Não foi possível acessar a câmera. Verifique as permissões no navegador.");
         });
         document.getElementById("reader").style.display = "block";
+    });
+
+    document.getElementById('equipamento').addEventListener('change', function() {
+        const selectedQRCode = this.value;
+        document.getElementById('qr_code').value = selectedQRCode;
     });
     </script>
     <script src="/static/color_mode.js"></script>

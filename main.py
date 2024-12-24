@@ -22,6 +22,7 @@ from openpyxl import Workbook, load_workbook
 from datetime import date
 
 class SistemaManutencao:
+    
     def __init__(self, arquivo='manutencoes.xlsx'):
         self.arquivo = arquivo
 
@@ -30,18 +31,6 @@ class SistemaManutencao:
         ws1 = wb.active
         ws1.title = "Equipamentos"
         ws1.append(["ID", "Nome", "QRCode"])
-        ws2 = wb.create_sheet(title="Manutencoes")
-        ws2.append(["Equipamento_ID", "Data_Manutencao", "Descricao"])
-        ws3 = wb.create_sheet(title="Pecas")
-        ws3.append(["Equipamento_ID", "Descricao", "Numero_Serie"])
-        wb.save(self.arquivo)
-
-    def cadastrar_equipamento(self, nome_equipamento, qr_code):
-        wb = load_workbook(self.arquivo)
-        ws = wb["Equipamentos"]
-        next_id = ws.max_row
-        ws.append([next_id, nome_equipamento, qr_code])
-        wb.save(self.arquivo)
 
     def registrar_manutencao(self, qr_code, descricao):
         wb = load_workbook(self.arquivo)
@@ -60,6 +49,62 @@ class SistemaManutencao:
         ws_manut.append([equipamento_id, str(date.today()), descricao])
         wb.save(self.arquivo)
         return True
+
+        # Dados da tabela em ordem correta
+        dados = [
+            ('1', "banheiro B1 masculino", '1'),
+            ('2', "banheiro B1 masculino - 2", '2'),
+            ('3', "banheiro B2 masculino - Exclusivo gerência", '3'),
+            ('4', "banheiro B2 feminino - Exclusivo gerência", '4'),
+            ('5', "banheiro B3 feminino", '5'),
+            ('6', "banheiro B3 feminino - 2", '6'),
+            ('7', "banheiro B4 unissex", '7'),
+            ('8', "banheiro B4 feminino", '8'),
+            ('9', "vestiario B5 feminino -  Armários e area de descanso", '9'),
+            ('10', "vestiario B5 feminino - Vasos e Chuveiros", '10'),
+            ('11', "vestiario B6 feminino -  Armários e area de descanso", '11'),
+            ('12', "vestiario B6 feminino - Vasos e Chuveiros", '12'),
+            ('13', "vestiario B7 masculino - Armários e area de descanso", '13'),
+            ('14', "vestiario B7 masculino - Vasos e Chuveiros", '14'),
+            ('15', "banheiro B8 masculino", '15'),
+            ('16', "banheiro B8 feminino", '16'),
+            ('17', "banheiro B9 masculino - trancado", '17'),
+            ('18', "banheiro B9 feminino - trancado", '18'),
+            ('19', "banheiro B11 masculino - exclusivo", '19'),
+            ('20', "banheiro B11 feminino - virou DML", '20'),
+            ('21', "banheiro B12 UNISSEX - exclusivo", '21'),
+            ('22', "banheiro B12 feminino", '22'),
+            ('23', "banheiro B13 UNISSEX - exclusivo", '23'),
+            ('24', "banheiro B13 feminino", '24'),
+            ('25', "banheiro B14 masculino", '25'),
+            ('26', "banheiro B14 feminino", '26'),
+            ('27', "banheiro B15 masculino", '27'),
+            ('28', "banheiro B15 feminino", '28'),
+            ('29', "vestiario B16 masculino - Vasos e Chuveiros", '29'),
+            ('30', "vestiario B16 masculino - Armários e area de descanso", '30'),
+            ('31', "vestiario B17 feminino - Chuveiros", '31'),
+            ('32', "vestiario B17 feminino - Armários e area de descanso", '32'),
+            ('33', "vestiario B18 - parte vestiario fem", '33'),
+            ('34', "banheiro B18 feminino - virou DML", '34'),
+            ('35', "vestiario B19 masculino - trancado", '35'),
+            ('36', "vestiario B19 feminino - trancado", '36')
+        ]
+        
+        for row in dados:
+            ws1.append(row)
+
+        ws2 = wb.create_sheet(title="Manutencoes")
+        ws2.append(["Equipamento_ID", "Data_Manutencao", "Descricao"])
+        ws3 = wb.create_sheet(title="Pecas")
+        ws3.append(["Equipamento_ID", "Descricao", "Numero_Serie"])
+        wb.save(self.arquivo)
+        
+    def cadastrar_equipamento(self, nome_equipamento, qr_code):
+        wb = load_workbook(self.arquivo)
+        ws = wb["Equipamentos"]
+        next_id = ws.max_row
+        ws.append([next_id, nome_equipamento, qr_code])
+        wb.save(self.arquivo)
 
     def consultar_historico_por_qr(self, qr_code):
         wb = load_workbook(self.arquivo)
@@ -84,6 +129,7 @@ class SistemaManutencao:
         return {"nome": nome_equipamento, "manutencoes": manutencoes}
 
     def adicionar_peca_excel(self, equipamento_id, descricao, numero_serie):
+
         try:
             wb = load_workbook(self.arquivo)
             ws = wb["Pecas"]
@@ -93,7 +139,9 @@ class SistemaManutencao:
             print(f"Erro ao adicionar peça ao Excel: {e}")
 
 
+
 sistema = SistemaManutencao()
+
 
 @app.route('/')
 def index():
@@ -130,6 +178,46 @@ def registrar_manutencao():
         "Mola de porta"
     ]
     
+    # Lista atualizada de equipamentos
+    equipamentos = [
+        {"nome": "banheiro B1 masculino", "qr_code": "1"},
+        {"nome": "banheiro B1 masculino - 2", "qr_code": "2"},
+        {"nome": "banheiro B2 masculino - Exclusivo gerência", "qr_code": "3"},
+        {"nome": "banheiro B2 feminino - Exclusivo gerência", "qr_code": "4"},
+        {"nome": "banheiro B3 feminino", "qr_code": "5"},
+        {"nome": "banheiro B3 feminino - 2", "qr_code": "6"},
+        {"nome": "banheiro B4 unissex", "qr_code": "7"},
+        {"nome": "banheiro B4 feminino", "qr_code": "8"},
+        {"nome": "vestiario B5 feminino - Armários e area de descanso", "qr_code": "9"},
+        {"nome": "vestiario B5 feminino - Vasos e Chuveiros", "qr_code": "10"},
+        {"nome": "vestiario B6 feminino - Armários e area de descanso", "qr_code": "11"},
+        {"nome": "vestiario B6 feminino - Vasos e Chuveiros", "qr_code": "12"},
+        {"nome": "vestiario B7 masculino - Armários e area de descanso", "qr_code": "13"},
+        {"nome": "vestiario B7 masculino - Vasos e Chuveiros", "qr_code": "14"},
+        {"nome": "banheiro B8 masculino", "qr_code": "15"},
+        {"nome": "banheiro B8 feminino", "qr_code": "16"},
+        {"nome": "banheiro B9 masculino - trancado", "qr_code": "17"},
+        {"nome": "banheiro B9 feminino - trancado", "qr_code": "18"},
+        {"nome": "banheiro B11 masculino - exclusivo", "qr_code": "19"},
+        {"nome": "banheiro B11 feminino - virou DML", "qr_code": "20"},
+        {"nome": "banheiro B12 UNISSEX - exclusivo", "qr_code": "21"},
+        {"nome": "banheiro B12 feminino", "qr_code": "22"},
+        {"nome": "banheiro B13 UNISSEX - exclusivo", "qr_code": "23"},
+        {"nome": "banheiro B13 feminino", "qr_code": "24"},
+        {"nome": "banheiro B14 masculino", "qr_code": "25"},
+        {"nome": "banheiro B14 feminino", "qr_code": "26"},
+        {"nome": "banheiro B15 masculino", "qr_code": "27"},
+        {"nome": "banheiro B15 feminino", "qr_code": "28"},
+        {"nome": "vestiario B16 masculino - Vasos e Chuveiros", "qr_code": "29"},
+        {"nome": "vestiario B16 masculino - Armários e area de descanso", "qr_code": "30"},
+        {"nome": "vestiario B17 feminino - Chuveiros", "qr_code": "31"},
+        {"nome": "vestiario B17 feminino - Armários e area de descanso", "qr_code": "32"},
+        {"nome": "vestiario B18 - parte vestiario fem", "qr_code": "33"},
+        {"nome": "banheiro B18 feminino - virou DML", "qr_code": "34"},
+        {"nome": "vestiario B19 masculino - trancado", "qr_code": "35"},
+        {"nome": "vestiario B19 feminino - trancado", "qr_code": "36"}
+    ]
+    
     if request.method == 'POST':
         qr_code = request.form['qr_code']
         checklist = {key: request.form.get(f'checklist[{key}]') for key in checklist_items}
@@ -139,8 +227,7 @@ def registrar_manutencao():
             return "Manutenção registrada com sucesso! <br><a href='/'>Voltar</a>"
         else:
             return "QR Code não encontrado! <br><a href='/registrar_manutencao'>Tente novamente</a>"
-    return render_template('registrar_manutencao.html', checklist_items=checklist_items)
-
+    return render_template('registrar_manutencao.html', checklist_items=checklist_items, equipamentos=equipamentos)
 
 
 
