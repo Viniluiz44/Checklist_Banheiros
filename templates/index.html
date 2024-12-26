@@ -16,7 +16,6 @@
             <a href="{{ url_for('registrar_manutencao') }}">Registrar Manutenção</a>
             <a href="{{ url_for('consultar_historico') }}">Consultar Histórico</a>
         </nav>
-
     </header>
     <main class="main">
         <div class="container">
@@ -24,6 +23,12 @@
             <p>Utilize as opções acima para navegar no sistema.</p>
             <a href="{{ url_for('criar_arquivo') }}" class="button">📂 Criar Novo Arquivo Excel</a>
             <a href="{{ url_for('download_planilha') }}" class="button">📥 Baixar Planilha Excel</a>
+            
+            <form action="{{ url_for('upload_planilha') }}" method="POST" enctype="multipart/form-data">
+                <label for="file">Importar Planilha:</label>
+                <input type="file" name="file" id="file" accept=".xlsx">
+                <input type="submit" value="Upload" class="button">
+            </form>
         </div>
     </main>
     <footer>

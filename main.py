@@ -5,6 +5,8 @@ from datetime import date
 from fpdf import FPDF
 import qrcode
 import io
+from werkzeug.utils import secure_filename
+
 
 
 app = Flask(__name__)
@@ -243,7 +245,7 @@ def registrar_manutencao():
         descricao = "; ".join(f"{item}: {status}" for item, status in checklist.items() if status)
         sucesso = sistema.registrar_manutencao(qr_code, descricao)
         if sucesso:
-            return "Manutenção registrada com sucesso! <br><a href='/'>Voltar</a>"
+            return "Manutenção registrada com sucesso! <br><a href='registrar_manutencao'>Voltar</a>"
         else:
             return "QR Code não encontrado! <br><a href='/registrar_manutencao'>Tente novamente</a>"
     return render_template('registrar_manutencao.html', checklist_items=checklist_items, equipamentos=equipamentos)
@@ -260,6 +262,47 @@ def consultar_historico():
         else:
             return "QR Code não encontrado! <br><a href='/consultar_historico'>Tente novamente</a>"
     return render_template('consultar_historico.html')
+
+@app.route('/upload_planilha', methods=['GET', 'POST'])
+def upload_planilha():
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            return redirect(request.url)
+        file = request.files['file']
+        if file.filename == '':
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
+            integrar_planilha(filepath)
+            return redirect(url_for('index'))
+    return render_template('upload_planilha.html')
+
+def integrar_planilha(filepath):
+    # Carregar a planilha existente
+    wb_principal = load_workbook(arquivo_excel)
+    ws_equipamentos_principal = wb_principal["Equipamentos"]
+    ws_manutencoes_principal = wb_principal["Manutencoes"]
+    
+    # Carregar a nova planilha
+    wb_novo = load_workbook(filepath)
+    ws_equipamentos_novo = wb_novo["Equipamentos"]
+    ws_manutencoes_novo = wb_novo["Manutencoes"]
+    
+    # Integrar dados da planilha nova na planilha principal
+    for row in ws_equipamentos_novo.iter_rows(min_row=2, values_only=True):
+        ws_equipamentos_principal.append(row)
+        
+    for row in ws_manutencoes_novo.iter_rows(min_row=2, values_only=True):
+        ws_manutencoes_principal.append(row)
+    
+    # Salvar a planilha principal com os novos dados integrados
+    wb_principal.save(arquivo_excel)
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'xlsx', 'xls'}
+
 
 @app.route('/explorador')
 def explorador():
