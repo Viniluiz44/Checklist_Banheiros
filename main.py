@@ -22,7 +22,6 @@ from openpyxl import Workbook, load_workbook
 from datetime import date
 
 class SistemaManutencao:
-    
     def __init__(self, arquivo='manutencoes.xlsx'):
         self.arquivo = arquivo
 
@@ -31,24 +30,6 @@ class SistemaManutencao:
         ws1 = wb.active
         ws1.title = "Equipamentos"
         ws1.append(["ID", "Nome", "QRCode"])
-
-    def registrar_manutencao(self, qr_code, descricao):
-        wb = load_workbook(self.arquivo)
-        ws_equip = wb["Equipamentos"]
-
-        equipamento_id = None
-        for row in ws_equip.iter_rows(min_row=2, values_only=True):
-            if row[2] == qr_code:
-                equipamento_id = row[0]
-                break
-
-        if equipamento_id is None:
-            return False
-
-        ws_manut = wb["Manutencoes"]
-        ws_manut.append([equipamento_id, str(date.today()), descricao])
-        wb.save(self.arquivo)
-        return True
 
         # Dados da tabela em ordem correta
         dados = [
@@ -60,9 +41,9 @@ class SistemaManutencao:
             ('6', "banheiro B3 feminino - 2", '6'),
             ('7', "banheiro B4 unissex", '7'),
             ('8', "banheiro B4 feminino", '8'),
-            ('9', "vestiario B5 feminino -  Armários e area de descanso", '9'),
+            ('9', "vestiario B5 feminino - Armários e area de descanso", '9'),
             ('10', "vestiario B5 feminino - Vasos e Chuveiros", '10'),
-            ('11', "vestiario B6 feminino -  Armários e area de descanso", '11'),
+            ('11', "vestiario B6 feminino - Armários e area de descanso", '11'),
             ('12', "vestiario B6 feminino - Vasos e Chuveiros", '12'),
             ('13', "vestiario B7 masculino - Armários e area de descanso", '13'),
             ('14', "vestiario B7 masculino - Vasos e Chuveiros", '14'),
@@ -87,7 +68,17 @@ class SistemaManutencao:
             ('33', "vestiario B18 - parte vestiario fem", '33'),
             ('34', "banheiro B18 feminino - virou DML", '34'),
             ('35', "vestiario B19 masculino - trancado", '35'),
-            ('36', "vestiario B19 feminino - trancado", '36')
+            ('36', "vestiario B19 feminino - trancado", '36'),
+            ('37', "Banheiro C4 Masculino", '37'),
+            ('38', "Banheiro C4 Feminino", '38'),
+            ('39', "Banheiro C5 Masculino", '39'),
+            ('40', "Banheiro C5 Feminino", '40'),
+            ('41', "Banheiro C6 Masculino", '41'),
+            ('42', "Banheiro C6 Feminino", '42'),
+            ('43', "Banheiro C7 Masculino", '43'),
+            ('44', "Banheiro C7 Feminino", '44'),
+            ('45', "Banheiro C8 Masculino", '45'),
+            ('46', "Banheiro C8 Feminino", '46')
         ]
         
         for row in dados:
@@ -98,13 +89,31 @@ class SistemaManutencao:
         ws3 = wb.create_sheet(title="Pecas")
         ws3.append(["Equipamento_ID", "Descricao", "Numero_Serie"])
         wb.save(self.arquivo)
-        
+
     def cadastrar_equipamento(self, nome_equipamento, qr_code):
         wb = load_workbook(self.arquivo)
         ws = wb["Equipamentos"]
         next_id = ws.max_row
         ws.append([next_id, nome_equipamento, qr_code])
         wb.save(self.arquivo)
+
+    def registrar_manutencao(self, qr_code, descricao):
+        wb = load_workbook(self.arquivo)
+        ws_equip = wb["Equipamentos"]
+
+        equipamento_id = None
+        for row in ws_equip.iter_rows(min_row=2, values_only=True):
+            if row[2] == qr_code:
+                equipamento_id = row[0]
+                break
+
+        if equipamento_id is None:
+            return False
+
+        ws_manut = wb["Manutencoes"]
+        ws_manut.append([equipamento_id, str(date.today()), descricao])
+        wb.save(self.arquivo)
+        return True
 
     def consultar_historico_por_qr(self, qr_code):
         wb = load_workbook(self.arquivo)
@@ -129,7 +138,6 @@ class SistemaManutencao:
         return {"nome": nome_equipamento, "manutencoes": manutencoes}
 
     def adicionar_peca_excel(self, equipamento_id, descricao, numero_serie):
-
         try:
             wb = load_workbook(self.arquivo)
             ws = wb["Pecas"]
@@ -137,6 +145,7 @@ class SistemaManutencao:
             wb.save(self.arquivo)
         except Exception as e:
             print(f"Erro ao adicionar peça ao Excel: {e}")
+
 
 
 
@@ -215,7 +224,17 @@ def registrar_manutencao():
         {"nome": "vestiario B18 - parte vestiario fem", "qr_code": "33"},
         {"nome": "banheiro B18 feminino - virou DML", "qr_code": "34"},
         {"nome": "vestiario B19 masculino - trancado", "qr_code": "35"},
-        {"nome": "vestiario B19 feminino - trancado", "qr_code": "36"}
+        {"nome": "vestiario B19 feminino - trancado", "qr_code": "36"},
+        {"nome": "Banheiro C4 Masculino", "qr_code": "37"},
+        {"nome": "Banheiro C4 Feminino", "qr_code": "38"},
+        {"nome": "Banheiro C5 Masculino", "qr_code": "39"},
+        {"nome": "Banheiro C5 Feminino", "qr_code": "40"},
+        {"nome": "Banheiro C6 Masculino", "qr_code": "41"},
+        {"nome": "Banheiro C6 Feminino", "qr_code": "42"},
+        {"nome": "Banheiro C7 Masculino", "qr_code": "43"},
+        {"nome": "Banheiro C7 Feminino", "qr_code": "44"},
+        {"nome": "Banheiro C8 Masculino", "qr_code": "45"},
+        {"nome": "Banheiro C8 Feminino", "qr_code": "46"}
     ]
     
     if request.method == 'POST':
