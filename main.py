@@ -165,7 +165,7 @@ def criar_arquivo():
 
 @app.route('/download_planilha')
 def download_planilha():
-    caminho_arquivo = os.path.join(app.root_path, 'manutencoes.xlsx')
+    caminho_arquivo = os.path.join(app.root_path, arquivo_excel)
     return send_file(caminho_arquivo, as_attachment=True, download_name='manutencoes.xlsx')
 
 
@@ -299,6 +299,10 @@ def integrar_planilha(filepath):
     
     # Salvar a planilha principal com os novos dados integrados
     wb_principal.save(arquivo_excel)
+
+def carregar_planilha():
+    return load_workbook(arquivo_excel)
+
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'xlsx', 'xls'}
